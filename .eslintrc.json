@@ -1,0 +1,43 @@
+{
+	"root": true,
+	"env": {
+		"browser": true,
+		"es6": true,
+		"node": true,
+		"mocha": true,
+		"jasmine": true
+	},
+	"globals": {
+		"cy": true,
+		"Cypress": true
+	},
+	"parser": "@typescript-eslint/parser",
+	"plugins": [
+		"@typescript-eslint"
+	],
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:@typescript-eslint/recommended",
+		"@hkh12"
+	],
+	"rules": {
+		"implicit-arrow-linebreak": "off",
+		"class-methods-use-this": "off",
+		"nonblock-statement-body-position": "off",
+		"curly": "off",
+		"no-unused-expressions": "off",
+		"import/no-unresolved": "off",
+		"@typescript-eslint/explicit-function-return-type": "off",
+		"@typescript-eslint/no-explicit-any": "off"
+	},
+	"overrides": [
+		{
+			"files": "**/*.js",
+			"rules": {
+				"import/no-unresolved": "error",
+				"import/no-extraneous-dependencies": "off"
+			}
+		}
+	]
+}

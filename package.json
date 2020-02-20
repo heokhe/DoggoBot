@@ -1,0 +1,21 @@
+{
+  "name": "doggo-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "parcel index.html"
+  },
+  "keywords": [],
+  "author": "Hosein Khansari <hrk.x11@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "spreax": "^2.1.2"
+  },
+  "devDependencies": {
+    "@hkh12/eslint-config": "^1.1.0",
+    "eslint": "^6.8.0",
+    "parcel": "^2.0.0-alpha.3.2",
+    "stylus": "^0.54.7"
+  }
+}
