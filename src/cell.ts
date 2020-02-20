@@ -8,6 +8,7 @@ export class Cell {
   west = new Action(ActionDirection.West);
   coordinates: Coordinates;
   active = false;
+  constant = false;
 
   constructor(coordinates: Coordinates) {
     this.coordinates = coordinates;
@@ -23,5 +24,18 @@ export class Cell {
 
   getAction(direction: ActionDirection) {
     return this.actions.find(action => action.direction === direction);
+  }
+
+  setAction(direction: ActionDirection, value: number) {
+    if (!this.constant) {
+      this.getAction(direction).value = value;
+    }
+  }
+
+  set(value: number) {
+    this.setAction(ActionDirection.North, value);
+    this.setAction(ActionDirection.East, value);
+    this.setAction(ActionDirection.South, value);
+    this.setAction(ActionDirection.West, value);
   }
 }

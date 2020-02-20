@@ -13,9 +13,11 @@ const table = new Table({
   }
 });
 const destination = table.cellAt(3, 0);
-for (const action of destination.actions) { 
-  action.value = 1;
-}
+destination.set(1);
+const trapHole = table.cellAt(3, 1);
+trapHole.set(-1);
+trapHole.constant = true;
+destination.constant = true;
 const tableData = derived(
   () => table.cells.map(
     cell => [cell.active, cell.actions.map(a => a.value.toFixed(2))]
@@ -37,7 +39,7 @@ const handleKeyDown = action((event: KeyboardEvent) => {
     newCell.active = true;
     currentCell.active = false;
   }
-  currentCell.getAction(direction).value = table.newQ(currentCell, direction, newCell);
+  currentCell.setAction(direction, table.newQ(currentCell, direction, newCell));
   tableData.compute();
 })
 const app = new Spreax('body', {
