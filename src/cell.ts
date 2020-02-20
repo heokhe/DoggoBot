@@ -1,13 +1,19 @@
-import { Action, ActionDirection } from './action'
+import { Action, ActionDirection } from './action';
 import { Coordinates } from './table';
 
 export class Cell {
   north = new Action(ActionDirection.North);
+
   east = new Action(ActionDirection.East);
+
   south = new Action(ActionDirection.South);
+
   west = new Action(ActionDirection.West);
+
   coordinates: Coordinates;
+
   active = false;
+
   constant = false;
 
   constructor(coordinates: Coordinates) {

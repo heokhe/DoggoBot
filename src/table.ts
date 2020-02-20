@@ -1,5 +1,5 @@
 import { Cell } from './cell';
-import { ActionDirection, Action } from './action';
+import { ActionDirection } from './action';
 
 type TableOptions = {
   width: number;
@@ -16,10 +16,15 @@ export type Coordinates = {
 
 export class Table {
   width: number;
+
   height: number;
+
   cells: Cell[];
+
   alpha: number;
+
   gamma: number;
+
   constructor({
     alpha, gamma, height, width, initialCoordinates
   }: TableOptions) {
@@ -27,7 +32,7 @@ export class Table {
     this.height = height;
     this.gamma = gamma;
     this.alpha = alpha;
-    this.cells = Array.from({ length: width * height})
+    this.cells = Array.from({ length: width * height })
       .map((_, i) => new Cell(this.getCoordsFromIndex(i)));
     this.cellAt(initialCoordinates.x, initialCoordinates.y).active = true;
   }
@@ -50,9 +55,9 @@ export class Table {
 
   newQ(cell: Cell, action: ActionDirection, newCell: Cell) {
     const sample = this.gamma * newCell.mostValuableAction.value;
-    console.log('Q(s,a) = ' + this.Q(cell, action));
-    console.log('(1-a)Q(s,a) = ' + (1-this.alpha)*this.Q(cell, action));
-    console.log('sample = ' + sample);
+    console.log(`Q(s,a) = ${this.Q(cell, action)}`);
+    console.log(`(1-a)Q(s,a) = ${(1 - this.alpha) * this.Q(cell, action)}`);
+    console.log(`sample = ${sample}`);
     return ((1 - this.alpha) * this.Q(cell, action)) + (this.alpha * sample);
   }
 
@@ -60,13 +65,13 @@ export class Table {
     const { x, y } = cell.coordinates;
     switch (action) {
       case ActionDirection.East:
-        return this.cellAt(x + 1, y)
+        return this.cellAt(x + 1, y);
       case ActionDirection.North:
-        return this.cellAt(x, y - 1)
+        return this.cellAt(x, y - 1);
       case ActionDirection.South:
-        return this.cellAt(x, y + 1)
-      case ActionDirection.West:
-        return this.cellAt(x - 1, y)
+        return this.cellAt(x, y + 1);
+      default: // East
+        return this.cellAt(x - 1, y);
     }
   }
 

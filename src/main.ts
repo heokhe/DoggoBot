@@ -1,13 +1,12 @@
 import Spreax, { derived, action } from 'spreax';
 import { Table } from './table';
-import { ActionDirection } from './action';
 import { getActionFromEventObject } from './functions';
 
 const table = new Table({
   width: 4,
   height: 3,
-  alpha: .5,
-  gamma: .9,
+  alpha: 0.5,
+  gamma: 0.9,
   initialCoordinates: {
     x: 0,
     y: 2
@@ -24,7 +23,7 @@ const tableData = derived(
   () => table.cells.map(
     cell => [cell.active, cell.actions.map(a => a.value.toFixed(2))]
   )
-)
+);
 
 const handleKeyDown = action((event: KeyboardEvent) => {
   const actionToTake = getActionFromEventObject(event);
@@ -32,10 +31,10 @@ const handleKeyDown = action((event: KeyboardEvent) => {
     table.update(actionToTake);
     tableData.compute();
   }
-})
+});
 
-const app = new Spreax('body', {
+// eslint-disable-next-line no-new
+new Spreax('body', {
   tableData,
   handleKeyDown
-})
-globalThis.app = app;
+});

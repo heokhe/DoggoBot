@@ -1,10 +1,11 @@
 {
   "name": "doggo-bot",
   "version": "1.0.0",
-  "description": "",
+  "private": true,
   "main": "app.js",
   "scripts": {
-    "start": "parcel index.html"
+    "start": "parcel index.html",
+    "lint": "eslint src --fix --ext ts"
   },
   "keywords": [],
   "author": "Hosein Khansari <hrk.x11@gmail.com>",
@@ -14,8 +15,11 @@
   },
   "devDependencies": {
     "@hkh12/eslint-config": "^1.1.0",
+    "@typescript-eslint/eslint-plugin": "^2.20.0",
+    "@typescript-eslint/parser": "^2.20.0",
     "eslint": "^6.8.0",
     "parcel": "^2.0.0-alpha.3.2",
-    "stylus": "^0.54.7"
+    "stylus": "^0.54.7",
+    "typescript": "^3.7.5"
   }
 }

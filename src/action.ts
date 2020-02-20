@@ -17,7 +17,9 @@ export enum ActionDirection {
 
 export class Action {
   direction: ActionDirection;
+
   value: number;
+
   constructor(direction: ActionDirection) {
     this.direction = direction;
     this.value = 0;
