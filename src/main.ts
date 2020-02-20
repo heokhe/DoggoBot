@@ -1,6 +1,7 @@
-import Spreax, { action, derived, state, setPath } from 'spreax';
+import Spreax, { derived, action } from 'spreax';
 import { Table } from './table';
 import { ActionDirection } from './action';
+import { getActionFromEventObject } from './functions';
 
 const table = new Table({
   width: 4,
@@ -14,34 +15,25 @@ const table = new Table({
 });
 const destination = table.cellAt(3, 0);
 destination.set(1);
+destination.constant = true;
 const trapHole = table.cellAt(3, 1);
 trapHole.set(-1);
 trapHole.constant = true;
-destination.constant = true;
+
 const tableData = derived(
   () => table.cells.map(
     cell => [cell.active, cell.actions.map(a => a.value.toFixed(2))]
   )
 )
+
 const handleKeyDown = action((event: KeyboardEvent) => {
-  const { code } = event;
-  if (!code.startsWith('Arrow')) return;
-  const directionString = code.slice(5).toLowerCase();
-  const currentCell = table.activeCell;
-  const direction: ActionDirection = {
-    up: ActionDirection.North,
-    down: ActionDirection.South,
-    right: ActionDirection.East,
-    left: ActionDirection.West
-  }[directionString];
-  const newCell = table.getNeighborAt(currentCell, direction) ?? currentCell;
-  if (newCell !== currentCell) {
-    newCell.active = true;
-    currentCell.active = false;
+  const actionToTake = getActionFromEventObject(event);
+  if (actionToTake) {
+    table.update(actionToTake);
+    tableData.compute();
   }
-  currentCell.setAction(direction, table.newQ(currentCell, direction, newCell));
-  tableData.compute();
 })
+
 const app = new Spreax('body', {
   tableData,
   handleKeyDown

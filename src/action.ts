@@ -1,7 +1,5 @@
-import { Cell } from './cell';
-
 export enum ActionDirection {
-  North,
+  North = 1,
   East,
   South,
   West

@@ -9,11 +9,11 @@
 </head>
 <body @on:keydown="handleKeyDown()" tabindex="0">
   <div class="container">
-    <div @for="cell of tableData" class="cell" @css:background="cell.color">
-      <div @for="action of cell['1']" class="action">
+    <div @for="cell of tableData" class="cell">
+      <div @for="action of cell[1]" class="action">
         <span>@{action}</span>
       </div>
-      <div class="indicator" @if="cell['0']"></div>
+      <div class="indicator" @if="cell[0]"></div>
     </div>
   </div>
 </body>

@@ -1,6 +1,5 @@
 import { Cell } from './cell';
 import { ActionDirection, Action } from './action';
-import { Coordinates } from './coordinates';
 
 type TableOptions = {
   width: number;
@@ -8,6 +7,11 @@ type TableOptions = {
   gamma: number;
   alpha: number;
   initialCoordinates: Coordinates;
+}
+
+export type Coordinates = {
+  x: number;
+  y: number;
 }
 
 export class Table {
@@ -68,5 +72,20 @@ export class Table {
 
   get activeCell() {
     return this.cells.find(cell => cell.active);
+  }
+
+  activateCell(cell: Cell) {
+    this.activeCell.active = false;
+    cell.active = true;
+  }
+
+  /**
+   * Calculates the new Q-values, and updates the cells.
+   */
+  update(action: ActionDirection) {
+    const currentCell = this.activeCell;
+    const newCell = this.getNeighborAt(currentCell, action) ?? currentCell;
+    this.activateCell(newCell);
+    currentCell.setAction(action, this.newQ(currentCell, action, newCell));
   }
 }

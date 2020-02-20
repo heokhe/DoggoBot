@@ -1,5 +1,5 @@
 import { Action, ActionDirection } from './action'
-import { Coordinates } from './coordinates';
+import { Coordinates } from './table';
 
 export class Cell {
   north = new Action(ActionDirection.North);
