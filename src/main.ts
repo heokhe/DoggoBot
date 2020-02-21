@@ -1,5 +1,5 @@
 import Spreax, { derived, action } from 'spreax';
-import { Table } from './table';
+import { Table } from './lib/table';
 import { getActionFromEventObject } from './functions';
 
 const table = new Table({

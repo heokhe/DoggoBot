@@ -1,4 +1,4 @@
-import { ActionDirection } from './action';
+import { ActionDirection } from './lib/action';
 
 export function getActionFromEventObject(event: KeyboardEvent): ActionDirection {
   return {

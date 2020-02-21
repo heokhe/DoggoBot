@@ -11,7 +11,7 @@
   <div class="container">
     <div @for="cell of tableData" class="cell">
       <div @for="action of cell[1]" class="action">
-        <span>@{action}</span>
+        <span>@(action)</span>
       </div>
       <div class="indicator" @if="cell[0]"></div>
     </div>

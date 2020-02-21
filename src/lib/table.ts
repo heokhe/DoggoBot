@@ -54,11 +54,10 @@ export class Table {
   }
 
   newQ(cell: Cell, action: ActionDirection, newCell: Cell) {
-    const sample = this.gamma * newCell.mostValuableAction.value;
-    console.log(`Q(s,a) = ${this.Q(cell, action)}`);
-    console.log(`(1-a)Q(s,a) = ${(1 - this.alpha) * this.Q(cell, action)}`);
-    console.log(`sample = ${sample}`);
-    return ((1 - this.alpha) * this.Q(cell, action)) + (this.alpha * sample);
+    const { alpha: a, gamma: y } = this,
+      sample = y * newCell.mostValuableAction.value,
+      q = this.Q(cell, action);
+    return (1 - a) * q + (a * sample);
   }
 
   getNeighborAt(cell: Cell, action: ActionDirection) {
