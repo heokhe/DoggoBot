@@ -1,4 +1,4 @@
-export enum ActionDirection {
+export enum Direction {
   North = 1,
   East,
   South,
@@ -16,11 +16,11 @@ export enum ActionDirection {
 // }
 
 export class Action {
-  direction: ActionDirection;
+  direction: Direction;
 
   value: number;
 
-  constructor(direction: ActionDirection) {
+  constructor(direction: Direction) {
     this.direction = direction;
     this.value = 0;
   }

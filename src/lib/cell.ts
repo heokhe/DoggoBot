@@ -1,14 +1,14 @@
-import { Action, ActionDirection } from './action';
+import { Action, Direction } from './action';
 import { Coordinates } from './table';
 
 export class Cell {
-  north = new Action(ActionDirection.North);
+  north = new Action(Direction.North);
 
-  east = new Action(ActionDirection.East);
+  east = new Action(Direction.East);
 
-  south = new Action(ActionDirection.South);
+  south = new Action(Direction.South);
 
-  west = new Action(ActionDirection.West);
+  west = new Action(Direction.West);
 
   coordinates: Coordinates;
 
@@ -28,20 +28,20 @@ export class Cell {
     return this.actions.sort((a, b) => b.value - a.value)[0];
   }
 
-  getAction(direction: ActionDirection) {
+  getAction(direction: Direction) {
     return this.actions.find(action => action.direction === direction);
   }
 
-  setAction(direction: ActionDirection, value: number) {
+  setAction(direction: Direction, value: number) {
     if (!this.constant) {
       this.getAction(direction).value = value;
     }
   }
 
   set(value: number) {
-    this.setAction(ActionDirection.North, value);
-    this.setAction(ActionDirection.East, value);
-    this.setAction(ActionDirection.South, value);
-    this.setAction(ActionDirection.West, value);
+    this.setAction(Direction.North, value);
+    this.setAction(Direction.East, value);
+    this.setAction(Direction.South, value);
+    this.setAction(Direction.West, value);
   }
 }

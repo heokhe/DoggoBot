@@ -1,6 +1,7 @@
 import Spreax, { derived, action } from 'spreax';
 import { Table } from './lib/table';
 import { getActionFromEventObject } from './functions';
+import { loadFromJson, makeCellsConstant } from './table-state';
 
 const table = new Table({
   width: 4,
@@ -12,25 +13,29 @@ const table = new Table({
     y: 2
   }
 });
-const destination = table.cellAt(3, 0);
-destination.set(1);
-destination.constant = true;
-const trapHole = table.cellAt(3, 1);
-trapHole.set(-1);
-trapHole.constant = true;
+const savedString = localStorage.getItem('table-data');
+if (savedString) loadFromJson(table, savedString);
+makeCellsConstant(table);
 
 const tableData = derived(
   () => table.cells.map(
     cell => [cell.active, cell.actions.map(a => a.value.toFixed(2))]
   )
 );
+tableData.subscribe(data =>
+  localStorage.setItem('table-data', JSON.stringify(data)),
+true);
 
 const handleKeyDown = action((event: KeyboardEvent) => {
-  const actionToTake = getActionFromEventObject(event);
-  if (actionToTake) {
-    table.update(actionToTake);
-    tableData.compute();
+  if (event.code === 'Backspace' && event.ctrlKey) {
+    table.reset();
+    makeCellsConstant(table);
+  } else {
+    const actionToTake = getActionFromEventObject(event);
+    if (actionToTake)
+      table.update(actionToTake);
   }
+  tableData.compute();
 });
 
 // eslint-disable-next-line no-new

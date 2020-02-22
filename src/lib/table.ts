@@ -1,5 +1,5 @@
 import { Cell } from './cell';
-import { ActionDirection } from './action';
+import { Direction } from './action';
 
 type TableOptions = {
   width: number;
@@ -25,6 +25,8 @@ export class Table {
 
   gamma: number;
 
+  initialCoordinates: Coordinates;
+
   constructor({
     alpha, gamma, height, width, initialCoordinates
   }: TableOptions) {
@@ -32,9 +34,16 @@ export class Table {
     this.height = height;
     this.gamma = gamma;
     this.alpha = alpha;
+    this.initialCoordinates = initialCoordinates;
     this.cells = Array.from({ length: width * height })
       .map((_, i) => new Cell(this.getCoordsFromIndex(i)));
-    this.cellAt(initialCoordinates.x, initialCoordinates.y).active = true;
+    this.goToInitialCoordinates();
+  }
+
+  goToInitialCoordinates() {
+    this.activateCell(
+      this.cellAt(this.initialCoordinates.x, this.initialCoordinates.y)
+    );
   }
 
   getCoordsFromIndex(index: number): Coordinates {
@@ -49,25 +58,25 @@ export class Table {
       coords.x === x && coords.y === y);
   }
 
-  Q(cell: Cell, action: ActionDirection) {
+  Q(cell: Cell, action: Direction) {
     return cell.getAction(action).value;
   }
 
-  newQ(cell: Cell, action: ActionDirection, newCell: Cell) {
+  newQ(cell: Cell, action: Direction, newCell: Cell) {
     const { alpha: a, gamma: y } = this,
       sample = y * newCell.mostValuableAction.value,
       q = this.Q(cell, action);
     return (1 - a) * q + (a * sample);
   }
 
-  getNeighborAt(cell: Cell, action: ActionDirection) {
+  getNeighborAt(cell: Cell, action: Direction) {
     const { x, y } = cell.coordinates;
     switch (action) {
-      case ActionDirection.East:
+      case Direction.East:
         return this.cellAt(x + 1, y);
-      case ActionDirection.North:
+      case Direction.North:
         return this.cellAt(x, y - 1);
-      case ActionDirection.South:
+      case Direction.South:
         return this.cellAt(x, y + 1);
       default: // East
         return this.cellAt(x - 1, y);
@@ -79,17 +88,24 @@ export class Table {
   }
 
   activateCell(cell: Cell) {
-    this.activeCell.active = false;
+    if (this.activeCell)
+      this.activeCell.active = false;
     cell.active = true;
   }
 
   /**
    * Calculates the new Q-values, and updates the cells.
    */
-  update(action: ActionDirection) {
+  update(action: Direction) {
     const currentCell = this.activeCell;
     const newCell = this.getNeighborAt(currentCell, action) ?? currentCell;
     this.activateCell(newCell);
     currentCell.setAction(action, this.newQ(currentCell, action, newCell));
+  }
+
+  reset() {
+    for (const cell of this.cells)
+      cell.set(0);
+    this.goToInitialCoordinates();
   }
 }

@@ -1,10 +1,10 @@
-import { ActionDirection } from './lib/action';
+import { Direction } from './lib/action';
 
-export function getActionFromEventObject(event: KeyboardEvent): ActionDirection {
+export function getActionFromEventObject(event: KeyboardEvent): Direction {
   return {
-    ArrowUp: ActionDirection.North,
-    ArrowDown: ActionDirection.South,
-    ArrowRight: ActionDirection.East,
-    ArrowLeft: ActionDirection.West
+    ArrowUp: Direction.North,
+    ArrowDown: Direction.South,
+    ArrowRight: Direction.East,
+    ArrowLeft: Direction.West
   }[event.code];
 }
