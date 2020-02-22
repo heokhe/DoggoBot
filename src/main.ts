@@ -1,6 +1,6 @@
 import Spreax, { derived, action } from 'spreax';
 import { Table } from './lib/table';
-import { getActionFromEventObject } from './functions';
+import { getActionFromEventObject, createColor } from './functions';
 import { loadFromJson, makeCellsConstant } from './table-state';
 
 const table = new Table({
@@ -41,5 +41,6 @@ const handleKeyDown = action((event: KeyboardEvent) => {
 // eslint-disable-next-line no-new
 new Spreax('body', {
   tableData,
-  handleKeyDown
+  handleKeyDown,
+  createColor: action((_, x: number) => createColor(x))
 });
