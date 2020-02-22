@@ -4,7 +4,8 @@
   "private": true,
   "main": "app.js",
   "scripts": {
-    "start": "parcel index.html",
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html --profile --dist-dir dist",
     "lint": "eslint src --fix --ext ts"
   },
   "keywords": [],
