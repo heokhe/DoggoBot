@@ -4,8 +4,8 @@ import { Direction } from './action';
 type TableOptions = {
   width: number;
   height: number;
-  gamma: number;
-  alpha: number;
+  discount: number;
+  learningRate: number;
   initialCoordinates: Coordinates;
 }
 
@@ -23,17 +23,17 @@ export class Table {
 
   alpha: number;
 
-  gamma: number;
+  learningRate: number;
 
   initialCoordinates: Coordinates;
 
   constructor({
-    alpha, gamma, height, width, initialCoordinates
+    learningRate, discount, height, width, initialCoordinates
   }: TableOptions) {
     this.width = width;
     this.height = height;
-    this.gamma = gamma;
-    this.alpha = alpha;
+    this.learningRate = discount;
+    this.alpha = learningRate;
     this.initialCoordinates = initialCoordinates;
     this.cells = Array.from({ length: width * height })
       .map((_, i) => new Cell(this.getCoordsFromIndex(i)));
@@ -63,7 +63,7 @@ export class Table {
   }
 
   newQ(cell: Cell, action: Direction, newCell: Cell) {
-    const { alpha: a, gamma: y } = this,
+    const { alpha: a, learningRate: y } = this,
       sample = y * newCell.mostValuableAction.value,
       q = this.Q(cell, action);
     return (1 - a) * q + (a * sample);

@@ -6,8 +6,8 @@ import { loadFromJson, makeCellsConstant } from './table-state';
 const table = new Table({
   width: 4,
   height: 3,
-  alpha: 0.5,
-  gamma: 0.9,
+  learningRate: 0.5,
+  discount: 0.9,
   initialCoordinates: {
     x: 0,
     y: 2

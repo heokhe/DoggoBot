@@ -25,7 +25,11 @@ export class Cell {
   }
 
   get mostValuableAction() {
-    return this.actions.sort((a, b) => b.value - a.value)[0];
+    let mostValuableAction: Action;
+    for (const action of this.actions)
+      if (!mostValuableAction || action.value > mostValuableAction.value)
+        mostValuableAction = action;
+    return mostValuableAction;
   }
 
   getAction(direction: Direction) {
