@@ -1,9 +1,8 @@
 import { Server } from 'ws';
 
-const ws = new Server({
-  port: 8000
-}, () => {
-  console.log('Listening on port 8000.');
+const port = 8000;
+const ws = new Server({ port }, () => {
+  console.log(`Listening on port ${port}`);
 });
 
 ws.addListener('connection', client => {
