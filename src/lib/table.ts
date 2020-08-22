@@ -1,12 +1,20 @@
 import { Cell } from './cell';
 import { Direction } from './action';
 
+const round = (x: number, s: number) => {
+  if (x < 0) return Math.floor(x / s) * s;
+  return Math.ceil(x / s) * s;
+};
+
+type Range = [number, number];
+
 type TableOptions = {
-  width: number;
-  height: number;
   discount: number;
   learningRate: number;
   initialCoordinates: Coordinates;
+  xRange: Range;
+  yRange: Range;
+  step: number;
 }
 
 export type Coordinates = {
@@ -15,10 +23,6 @@ export type Coordinates = {
 }
 
 export class Table {
-  width: number;
-
-  height: number;
-
   cells: Cell[];
 
   alpha: number;
@@ -27,9 +31,27 @@ export class Table {
 
   initialCoordinates: Coordinates;
 
+  step: number;
+
+  width: number;
+
+  height: number;
+
+  xRange: Range;
+
+  yRange: Range;
+
   constructor({
-    learningRate, discount, height, width, initialCoordinates
+    learningRate, discount, initialCoordinates,
+    xRange, yRange, step
   }: TableOptions) {
+    this.step = step;
+    const clampedXRange = xRange.map(x => round(x, step)) as Range;
+    const clampedYRange = yRange.map(y => round(y, step)) as Range;
+    const width = (clampedXRange[1] - clampedXRange[0]) / step + 1;
+    const height = (clampedYRange[1] - clampedYRange[0]) / step + 1;
+    this.xRange = clampedXRange;
+    this.yRange = clampedYRange;
     this.width = width;
     this.height = height;
     this.learningRate = discount;
@@ -47,10 +69,11 @@ export class Table {
   }
 
   getCoordsFromIndex(index: number): Coordinates {
-    return {
-      y: Math.floor(index / (this.height + 1)),
-      x: index % this.width
-    };
+    const zeroBasedX = index % this.width;
+    const zeroBasedY = Math.floor(index / this.width);
+    const x = zeroBasedX * this.step + this.xRange[0];
+    const y = zeroBasedY * this.step + this.yRange[0];
+    return { x, y };
   }
 
   cellAt(x: number, y: number) {
