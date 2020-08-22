@@ -9,7 +9,7 @@ const round = (x: number, s: number) => {
 type Range = [number, number];
 
 type TableOptions = {
-  discount: number;
+  discountRate: number;
   learningRate: number;
   initialCoordinates: Coordinates;
   xRange: Range;
@@ -25,9 +25,9 @@ export type Coordinates = {
 export class Table {
   cells: Cell[];
 
-  alpha: number;
-
   learningRate: number;
+
+  discountRate: number;
 
   initialCoordinates: Coordinates;
 
@@ -42,7 +42,7 @@ export class Table {
   yRange: Range;
 
   constructor({
-    learningRate, discount, initialCoordinates,
+    learningRate, discountRate, initialCoordinates,
     xRange, yRange, step
   }: TableOptions) {
     this.step = step;
@@ -54,8 +54,8 @@ export class Table {
     this.yRange = clampedYRange;
     this.width = width;
     this.height = height;
-    this.learningRate = discount;
-    this.alpha = learningRate;
+    this.discountRate = discountRate;
+    this.learningRate = learningRate;
     this.initialCoordinates = initialCoordinates;
     this.cells = Array.from({ length: width * height })
       .map((_, i) => new Cell(this.getCoordsFromIndex(i)));
@@ -86,7 +86,7 @@ export class Table {
   }
 
   newQ(cell: Cell, action: Direction, newCell: Cell) {
-    const { alpha: a, learningRate: y } = this,
+    const { learningRate: a, discountRate: y } = this,
       sample = y * newCell.mostValuableAction.value,
       q = this.Q(cell, action);
     return (1 - a) * q + (a * sample);
