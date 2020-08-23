@@ -1,6 +1,7 @@
 {
   "name": "doggo-bot",
   "version": "1.0.0",
+  "private": true,
   "scripts": {
     "start": "ts-node src/socket.ts",
     "dev": "ts-node-dev --rs src/socket.ts",
@@ -11,15 +12,15 @@
   "license": "ISC",
   "dependencies": {
     "@types/ws": "^7.2.6",
-    "ts-node-dev": "^1.0.0-pre.56",
     "ws": "^7.3.1"
   },
   "devDependencies": {
-    "@hkh12/eslint-config": "^1.1.0",
+    "@hkh12/eslint-config": "^1.2.1",
     "@typescript-eslint/eslint-plugin": "^2.20.0",
     "@typescript-eslint/parser": "^2.20.0",
     "eslint": "^6.8.0",
     "ts-node": "^8.10.2",
+    "ts-node-dev": "^1.0.0-pre.56",
     "typescript": "^3.9.7"
   }
 }
