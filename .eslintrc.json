@@ -1,15 +1,8 @@
 {
 	"root": true,
 	"env": {
-		"browser": true,
 		"es6": true,
-		"node": true,
-		"mocha": true,
-		"jasmine": true
-	},
-	"globals": {
-		"cy": true,
-		"Cypress": true
+		"node": true
 	},
 	"parser": "@typescript-eslint/parser",
 	"plugins": [
@@ -22,7 +15,6 @@
 		"@hkh12"
 	],
 	"rules": {
-		"implicit-arrow-linebreak": "off",
 		"class-methods-use-this": "off",
 		"nonblock-statement-body-position": "off",
 		"curly": "off",
