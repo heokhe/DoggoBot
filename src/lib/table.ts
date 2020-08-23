@@ -96,13 +96,13 @@ export class Table {
     const { x, y } = cell.coordinates;
     switch (action) {
       case Direction.East:
-        return this.cellAt(x + 1, y);
+        return this.cellAt(x + this.step, y);
       case Direction.North:
-        return this.cellAt(x, y - 1);
+        return this.cellAt(x, y - this.step);
       case Direction.South:
-        return this.cellAt(x, y + 1);
+        return this.cellAt(x, y + this.step);
       default: // East
-        return this.cellAt(x - 1, y);
+        return this.cellAt(x - this.step, y);
     }
   }
 
