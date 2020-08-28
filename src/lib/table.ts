@@ -94,6 +94,10 @@ export class Table {
 
   getNeighborAt(cell: Cell, action: Direction) {
     const { x, y } = cell.coordinates;
+    if (
+      ((action === Direction.North || action === Direction.South) && this.yBounds.includes(y))
+      || ((action === Direction.East || action === Direction.West) && this.xBounds.includes(x))
+    ) return cell;
     switch (action) {
       case Direction.East:
         return this.cellAt(x + this.step, y);
@@ -121,7 +125,7 @@ export class Table {
    */
   update(action: Direction) {
     const currentCell = this.activeCell;
-    const newCell = this.getNeighborAt(currentCell, action) ?? currentCell;
+    const newCell = this.getNeighborAt(currentCell, action);
     this.activateCell(newCell);
     currentCell.setAction(action, this.newQ(currentCell, action, newCell));
   }
