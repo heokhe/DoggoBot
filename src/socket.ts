@@ -2,7 +2,6 @@ import express from 'express';
 import WebSocket, { Server } from 'ws';
 import { createTableFromConfig } from './lib/commands/config';
 import type { Table } from './lib/table';
-import { getRandomDirection } from './lib/helpers';
 
 // TODO: --step-by-step
 
