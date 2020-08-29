@@ -44,6 +44,17 @@ export class Cell {
     }
   }
 
+  decide(randomness: number): Action {
+    const { mostValuableAction, actions } = this,
+      lessValueableActions = actions.filter(a => a !== mostValuableAction),
+      r = Math.random();
+    if (r > randomness) {
+      return mostValuableAction;
+    }
+    // TODO: handle corners
+    return lessValueableActions[Math.floor(r * 3)];
+  }
+
   set(value: number) {
     this.setAction(Direction.North, value);
     this.setAction(Direction.East, value);

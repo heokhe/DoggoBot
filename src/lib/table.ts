@@ -1,20 +1,15 @@
 import { Cell } from './cell';
-import { Direction } from './action';
-
-const round = (x: number, s: number) => {
-  if (x < 0) return Math.floor(x / s) * s;
-  return Math.ceil(x / s) * s;
-};
-
-type Range = [number, number];
+import { Direction, Action } from './action';
+import { round, Bounds } from './helpers';
 
 type TableOptions = {
   discountRate: number;
   learningRate: number;
   initialCoordinates: Coordinates;
-  xRange: Range;
-  yRange: Range;
+  xBounds: Bounds;
+  yBounds: Bounds;
   step: number;
+  randomness: number;
 }
 
 export type Coordinates = {
@@ -29,37 +24,46 @@ export class Table {
 
   discountRate: number;
 
-  initialCoordinates: Coordinates;
+  randomness: number;
 
-  step: number;
+  nextMove: Action | null;
 
-  width: number;
+  readonly initialCoordinates: Coordinates;
 
-  height: number;
+  readonly step: number;
 
-  xRange: Range;
+  readonly width: number;
 
-  yRange: Range;
+  readonly height: number;
+
+  xBounds: Bounds;
+
+  yBounds: Bounds;
 
   constructor({
     learningRate, discountRate, initialCoordinates,
-    xRange, yRange, step
+    xBounds, yBounds, step, randomness
   }: TableOptions) {
     this.step = step;
-    const clampedXRange = xRange.map(x => round(x, step)) as Range;
-    const clampedYRange = yRange.map(y => round(y, step)) as Range;
+    const clampedXRange = xBounds.map(x => round(x, step)) as Bounds;
+    const clampedYRange = yBounds.map(y => round(y, step)) as Bounds;
     const width = (clampedXRange[1] - clampedXRange[0]) / step + 1;
     const height = (clampedYRange[1] - clampedYRange[0]) / step + 1;
-    this.xRange = clampedXRange;
-    this.yRange = clampedYRange;
+    this.xBounds = clampedXRange;
+    this.yBounds = clampedYRange;
     this.width = width;
     this.height = height;
+    this.randomness = randomness;
     this.discountRate = discountRate;
     this.learningRate = learningRate;
     this.initialCoordinates = initialCoordinates;
     this.cells = Array.from({ length: width * height })
       .map((_, i) => new Cell(this.getCoordsFromIndex(i)));
     this.goToInitialCoordinates();
+  }
+
+  get nextCell() {
+    return this.getNeighborAt(this.activeCell, this.nextMove.direction);
   }
 
   goToInitialCoordinates() {
@@ -71,23 +75,22 @@ export class Table {
   getCoordsFromIndex(index: number): Coordinates {
     const zeroBasedX = index % this.width;
     const zeroBasedY = Math.floor(index / this.width);
-    const x = zeroBasedX * this.step + this.xRange[0];
-    const y = zeroBasedY * this.step + this.yRange[0];
+    const x = zeroBasedX * this.step + this.xBounds[0];
+    const y = zeroBasedY * this.step + this.yBounds[0];
     return { x, y };
   }
 
   cellAt(x: number, y: number) {
-    return this.cells.find(({ coordinates: coords }) =>
-      coords.x === x && coords.y === y);
+    return this.cells.find(({ coordinates: coords }) => coords.x === x && coords.y === y);
   }
 
   Q(cell: Cell, action: Direction) {
     return cell.getAction(action).value;
   }
 
-  newQ(cell: Cell, action: Direction, newCell: Cell) {
+  newQ(cell: Cell, action: Direction, newCell: Cell, reward = 0) {
     const { learningRate: a, discountRate: y } = this,
-      sample = y * newCell.mostValuableAction.value,
+      sample = y * newCell.mostValuableAction.value + reward,
       q = this.Q(cell, action);
     return (1 - a) * q + (a * sample);
   }
@@ -120,14 +123,17 @@ export class Table {
     cell.active = true;
   }
 
-  /**
-   * Calculates the new Q-values, and updates the cells.
-   */
-  update(action: Direction) {
-    const currentCell = this.activeCell;
-    const newCell = this.getNeighborAt(currentCell, action);
-    this.activateCell(newCell);
-    currentCell.setAction(action, this.newQ(currentCell, action, newCell));
+  determineTheNextMove() {
+    this.nextMove = this.activeCell.decide(this.randomness);
+  }
+
+  update(reward: number) {
+    const { activeCell, nextCell, nextMove } = this;
+    this.activateCell(nextCell);
+    activeCell.setAction(
+      nextMove.direction, this.newQ(activeCell, nextMove.direction, nextCell, reward)
+    );
+    this.nextMove = undefined;
   }
 
   reset() {
