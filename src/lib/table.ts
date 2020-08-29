@@ -1,6 +1,7 @@
 import { Cell } from './cell';
 import { Direction, Action } from './action';
 import { round, Bounds } from './helpers';
+import { Coordinates } from './helpers';
 
 type TableOptions = {
   discountRate: number;
@@ -10,11 +11,6 @@ type TableOptions = {
   yBounds: Bounds;
   step: number;
   randomness: number;
-}
-
-export type Coordinates = {
-  x: number;
-  y: number;
 }
 
 export class Table {
