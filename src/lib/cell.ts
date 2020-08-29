@@ -24,12 +24,14 @@ export class Cell {
     return [this.north, this.east, this.west, this.south];
   }
 
-  get mostValuableAction() {
+  get mostValuableAction(): Action {
     let mostValuableAction: Action;
     for (const action of this.actions)
       if (!mostValuableAction || action.value > mostValuableAction.value)
         mostValuableAction = action;
-    return mostValuableAction;
+    const equalActions = this.actions.filter(a => a.value === mostValuableAction.value);
+    const index = Math.floor(Math.random() * equalActions.length);
+    return equalActions[index];
   }
 
   getAction(direction: Direction) {
