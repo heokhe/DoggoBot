@@ -10,19 +10,13 @@ function render(table) {
   root.innerHTML = '';
   root.style.gridTemplateColumns = `repeat(${table.width}, 1fr)`;
   for (const cell of table.cells) {
-    const {
-      north, south, east, west
-    } = cell;
-    const cellValue = [north, south, east, west].map(a => a.value).reduce((a, b) => a + b, 0) / 4;
+    const cellValue = cell.actions.map(a => a.value).reduce((a, b) => a + b, 0) / cell.actions.length;
     root.insertAdjacentHTML('beforeend', `<div class="cell" title="(${cell.coordinates.x}, ${cell.coordinates.y})">${cellValue.toFixed(2)}</div>`);
   }
 }
 
 function updateCell(index, cellObject) {
-  const {
-    north, south, east, west
-  } = cellObject;
-  const cellValue = [north, south, east, west].map(a => a.value).reduce((a, b) => a + b, 0) / 4;
+  const cellValue = cellObject.actions.map(a => a.value).reduce((a, b) => a + b, 0) / cellObject.actions.length;
   document.querySelectorAll('.cell')[index].innerHTML = cellValue.toFixed(2);
 }
 
@@ -33,7 +27,7 @@ server.addEventListener('message', ev => {
     const { table } = data;
     render(table);
     fakeUnityClient.send('reward 1');
-  } else if (data.type === 'update' && i < 10000) {
+  } else if (data.type === 'update' && i < 50000) {
     updateCell(data.index, data.cell);
     fakeUnityClient.send(`reward ${Math.ceil(Math.random() * 5)}`);
     i++;

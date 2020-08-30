@@ -1,7 +1,6 @@
 import { Cell } from './cell';
 import { Direction, Action } from './action';
-import { round, Bounds } from './helpers';
-import { Coordinates } from './helpers';
+import { round, Bounds, Coordinates } from './helpers';
 
 type TableOptions = {
   discountRate: number;
@@ -53,9 +52,22 @@ export class Table {
     this.discountRate = discountRate;
     this.learningRate = learningRate;
     this.initialCoordinates = initialCoordinates;
-    this.cells = Array.from({ length: width * height })
-      .map((_, i) => new Cell(this.getCoordsFromIndex(i)));
+    this.createCells();
     this.goToInitialCoordinates();
+  }
+
+  createCells() {
+    const cells = [];
+    for (let i = 0; i < this.width * this.height; i++) {
+      const { x, y } = this.getCoordsFromIndex(i);
+      cells.push(new Cell({ x, y }, {
+        North: y !== this.yBounds[0],
+        East: x !== this.xBounds[1],
+        South: y !== this.yBounds[1],
+        West: x !== this.xBounds[0]
+      }));
+    }
+    this.cells = cells;
   }
 
   get nextCell() {
@@ -93,19 +105,15 @@ export class Table {
 
   getNeighborAt(cell: Cell, action: Direction) {
     const { x, y } = cell.coordinates;
-    if (
-      ((action === Direction.North || action === Direction.South) && this.yBounds.includes(y))
-      || ((action === Direction.East || action === Direction.West) && this.xBounds.includes(x))
-    ) return cell;
     switch (action) {
-      case Direction.East:
-        return this.cellAt(x + this.step, y);
+      case Direction.West:
+        return this.cellAt(x - this.step, y);
       case Direction.North:
         return this.cellAt(x, y - this.step);
       case Direction.South:
         return this.cellAt(x, y + this.step);
       default: // East
-        return this.cellAt(x - this.step, y);
+        return this.cellAt(x + this.step, y);
     }
   }
 

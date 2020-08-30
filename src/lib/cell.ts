@@ -1,27 +1,22 @@
-import { Action, Direction } from './action';
+import { Action, Direction, DirectionName } from './action';
 import { Coordinates } from './helpers';
 
 export class Cell {
-  north = new Action(Direction.North);
-
-  east = new Action(Direction.East);
-
-  south = new Action(Direction.South);
-
-  west = new Action(Direction.West);
-
   coordinates: Coordinates;
 
   active = false;
 
   constant = false;
 
-  constructor(coordinates: Coordinates) {
-    this.coordinates = coordinates;
-  }
+  actions: Action[];
 
-  get actions() {
-    return [this.north, this.east, this.west, this.south];
+  constructor(coordinates: Coordinates, directions: {
+    [x in DirectionName]: boolean;
+  }) {
+    this.coordinates = coordinates;
+    this.actions = Object.entries(directions)
+      .filter(([, value]) => value)
+      .map(([name]) => new Action(Direction[name as DirectionName]));
   }
 
   get mostValuableAction(): Action {
@@ -51,8 +46,7 @@ export class Cell {
     if (r > randomness) {
       return mostValuableAction;
     }
-    // TODO: handle corners
-    return lessValueableActions[Math.floor(r * 3)];
+    return lessValueableActions[Math.floor(r * lessValueableActions.length)];
   }
 
   set(value: number) {
