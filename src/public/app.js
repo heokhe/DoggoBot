@@ -8,10 +8,12 @@ fakeUnityClient.onopen = () => {
 
 // eslint-disable-next-line one-var-declaration-per-line
 let min, max, table;
+let mostUpdatedCell,
+  avgUC = 0;
 
 const calculateColor = value => {
   const base = value > 0 ? '78,178,78' : '214,80,74';
-  const opacity = value / (value > 0 ? max : min);
+  const opacity = (value / (value > 0 ? max : min)) ** 0.7;
   return `rgb(${base}, ${opacity})`;
 };
 
@@ -27,12 +29,25 @@ function setupAndRender() {
   }
 }
 
+function writeTheSize() {
+  const el = document.getElementById('size');
+  el.innerText = `${table.width}${el.innerText}${table.height} (${table.width * table.height})`;
+}
+
+function writeTheAverageUC() {
+  document.getElementById('avguc').innerText = avgUC.toFixed(2);
+}
+
+function writeTheMaximumUC() {
+  document.getElementById('maxuc').innerText = mostUpdatedCell.updatesCount;
+}
+
 function update(index, cell) {
   const els = document.querySelectorAll('.cell');
+  table.cells[index] = cell;
   const cellValue = cell.avgValue;
   if (cellValue < min) min = cellValue;
   if (cellValue > max) max = cellValue;
-  table.cells[index] = cell;
 
   if (min === cellValue || max === cellValue) {
     for (let i = 0; i < table.cells.length; i++) {
@@ -42,16 +57,27 @@ function update(index, cell) {
     // there's no change in max or min, so we don't need to update the other cells
     els[index].style.backgroundColor = calculateColor(cellValue);
   }
+
+  if (cell.updatesCount > mostUpdatedCell.updatesCount) {
+    mostUpdatedCell = cell;
+    writeTheMaximumUC();
+  }
+  avgUC += 1 / table.cells.length;
 }
 
 server.addEventListener('message', ev => {
   const data = JSON.parse(ev.data);
   if (data.type === 'table') {
     ({ table } = data);
+    writeTheSize();
+    writeTheAverageUC();
+    [mostUpdatedCell] = table.cells;
+    writeTheMaximumUC();
     setupAndRender();
     fakeUnityClient.send('reward 1');
   } else if (data.type === 'update') {
     update(data.index, data.cell);
-    fakeUnityClient.send(`reward ${Math.ceil(Math.random() * 5)}`);
+    writeTheAverageUC();
+    fakeUnityClient.send(`reward ${Math.ceil(Math.random() * 10) - 4}`);
   }
 });

@@ -10,6 +10,8 @@ export class Cell {
 
   avgValue: number;
 
+  updatesCount = 0;
+
   constructor(coordinates: Coordinates, directions: {
     [x in DirectionName]: boolean;
   }) {
@@ -43,6 +45,7 @@ export class Cell {
   setAction(direction: Direction, value: number) {
     this.getAction(direction).value = value;
     this.calculateAvgValue();
+    this.updatesCount++;
   }
 
   decide(randomness: number): Action {

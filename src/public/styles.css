@@ -22,6 +22,11 @@ aside h1 {
   font-weight: 300;
 }
 
+aside p {
+  line-height: 2;
+  font-size: 1.25rem;
+}
+
 main {
   display: grid;
   width: 50%;
