@@ -1,18 +1,35 @@
 body {
   margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  min-height: 100vh;
+  height: 100vh;
+  background-image: linear-gradient(to left, #fff, #ddd);
 }
 
-#table {
+aside {
+  width: 50%;
+  padding: 2.5rem 3rem;
+}
+
+aside h1:first-child {
+  margin-top: 0;
+}
+
+aside h1 {
+  font-size: 3rem;
+  font-weight: 300;
+}
+
+main {
   display: grid;
-  width: 70%;
+  width: 50%;
+  flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: 5px 0 20px 1px #0002, 10px 0 100px #94519b2f;
 }
 
 .cell {
   width: 100%;
-  height: 16px;
-  background-color: red;
 }
