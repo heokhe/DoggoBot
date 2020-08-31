@@ -6,8 +6,6 @@ export class Cell {
 
   active = false;
 
-  constant = false;
-
   actions: Action[];
 
   constructor(coordinates: Coordinates, directions: {
@@ -34,8 +32,7 @@ export class Cell {
   }
 
   setAction(direction: Direction, value: number) {
-    if (!this.constant) {
-      this.getAction(direction).value = value;
+    this.getAction(direction).value = value;
     }
   }
 
@@ -47,12 +44,5 @@ export class Cell {
       return mostValuableAction;
     }
     return lessValueableActions[Math.floor(r * lessValueableActions.length)];
-  }
-
-  set(value: number) {
-    this.setAction(Direction.North, value);
-    this.setAction(Direction.East, value);
-    this.setAction(Direction.South, value);
-    this.setAction(Direction.West, value);
   }
 }

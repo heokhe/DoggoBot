@@ -141,10 +141,4 @@ export class Table {
     );
     this.nextMove = undefined;
   }
-
-  reset() {
-    for (const cell of this.cells)
-      cell.set(0);
-    this.goToInitialCoordinates();
-  }
 }
