@@ -8,6 +8,8 @@ export class Cell {
 
   actions: Action[];
 
+  avgValue: number;
+
   constructor(coordinates: Coordinates, directions: {
     [x in DirectionName]: boolean;
   }) {
@@ -15,6 +17,13 @@ export class Cell {
     this.actions = Object.entries(directions)
       .filter(([, value]) => value)
       .map(([name]) => new Action(Direction[name as DirectionName]));
+    this.calculateAvgValue();
+  }
+
+  calculateAvgValue() {
+    const { actions } = this;
+    const avg = actions.reduce((a, b) => a + b.value, 0) / actions.length;
+    this.avgValue = avg;
   }
 
   get mostValuableAction(): Action {
@@ -33,7 +42,7 @@ export class Cell {
 
   setAction(direction: Direction, value: number) {
     this.getAction(direction).value = value;
-    }
+    this.calculateAvgValue();
   }
 
   decide(randomness: number): Action {
