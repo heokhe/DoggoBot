@@ -24,7 +24,6 @@ ws.addListener('connection', (client: WebSocket, req: Request) => {
   if (client === devClient) return;
 
   let table: Table;
-  let i = 0;
   client.on('message', (msg: string) => {
     const firstSpaceIndex = msg.indexOf(' ');
     const command = msg.slice(0, firstSpaceIndex);
@@ -35,20 +34,18 @@ ws.addListener('connection', (client: WebSocket, req: Request) => {
       table = createTableFromConfig(L, h, step);
       table.determineTheNextMove();
       const { x, y } = table.nextCell.coordinates;
-      client.send(`${x} ${y} ${i}`);
-      i++;
+      client.send(`${x} ${y}`);
       devClient?.send(JSON.stringify({ type: 'table', table }));
     } else if (command === 'reward') {
       const [reward, _movementId] = args;
-      const c = table.activeCell;
+      const prevCell = table.activeCell;
       table.update(reward);
-      const { x, y } = c.coordinates;
-      client.send(`${x} ${y} ${i}`);
-      i++;
+      const { x, y } = prevCell.coordinates;
+      client.send(`${x} ${y}`);
       devClient?.send(JSON.stringify({
         type: 'update',
-        cell: c,
-        index: table.cells.indexOf(c)
+        cell: prevCell,
+        index: table.cells.indexOf(prevCell)
       }));
       table.determineTheNextMove();
     }
