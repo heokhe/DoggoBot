@@ -88,8 +88,10 @@ export class Table {
     return { x, y };
   }
 
-  cellAt(x: number, y: number) {
-    return this.cells.find(({ coordinates: coords }) => coords.x === x && coords.y === y);
+  cellAt(x: number, y: number): Cell {
+    return this.cells[
+      ((y - this.yBounds[0]) * this.width + (x - this.xBounds[0])) / this.step
+    ];
   }
 
   Q(cell: Cell, action: Direction) {
