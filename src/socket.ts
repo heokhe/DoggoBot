@@ -58,7 +58,7 @@ expected: ${[currentCell.x, currentCell.y]},${[nextCell.x, nextCell.y]}`);
       devClient?.send(JSON.stringify({
         type: 'update',
         cell: currentCell,
-        index: table.cells.indexOf(currentCell)
+        index: table.getIndexFromCoords(currentCell.coordinates)
       }));
     }
   });

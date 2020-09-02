@@ -88,10 +88,12 @@ export class Table {
     return { x, y };
   }
 
+  getIndexFromCoords({ x, y }: Coordinates): number {
+    return ((y - this.yBounds[0]) * this.width + (x - this.xBounds[0])) / this.step;
+  }
+
   cellAt(x: number, y: number): Cell {
-    return this.cells[
-      ((y - this.yBounds[0]) * this.width + (x - this.xBounds[0])) / this.step
-    ];
+    return this.cells[this.getIndexFromCoords({ x, y })];
   }
 
   Q(cell: Cell, action: Direction) {
