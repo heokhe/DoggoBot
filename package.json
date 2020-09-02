@@ -5,7 +5,7 @@
   "scripts": {
     "start": "ts-node src/socket.ts",
     "dev": "ts-node-dev --rs src/socket.ts",
-    "lint": "eslint src --fix --ext ts"
+    "lint": "eslint src --fix --ext ts,js"
   },
   "keywords": [],
   "author": "Hosein Khansari <hrk.x11@gmail.com>",
