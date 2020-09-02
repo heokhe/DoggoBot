@@ -106,16 +106,17 @@ export class Table {
   }
 
   getNeighborAt(cell: Cell, action: Direction) {
-    const { x, y } = cell.coordinates;
+    const { x, y } = cell;
+    const s = this.step;
     switch (action) {
       case Direction.West:
-        return this.cellAt(x - this.step, y);
+        return this.cellAt(x - s, y);
       case Direction.North:
-        return this.cellAt(x, y - this.step);
+        return this.cellAt(x, y - s);
       case Direction.South:
-        return this.cellAt(x, y + this.step);
+        return this.cellAt(x, y + s);
       default: // East
-        return this.cellAt(x + this.step, y);
+        return this.cellAt(x + s, y);
     }
   }
 

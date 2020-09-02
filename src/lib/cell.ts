@@ -22,6 +22,14 @@ export class Cell {
     this.calculateAvgValue();
   }
 
+  get x() {
+    return this.coordinates.x;
+  }
+
+  get y() {
+    return this.coordinates.y;
+  }
+
   calculateAvgValue() {
     const { actions } = this;
     const avg = actions.reduce((a, b) => a + b.value, 0) / actions.length;

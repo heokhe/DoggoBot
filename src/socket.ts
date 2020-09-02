@@ -32,26 +32,29 @@ ws.addListener('connection', (client: WebSocket, req: Request) => {
     if (command === 'config') {
       const [L, h, step] = args;
       table = createTableFromConfig(L, h, step);
+
       table.determineTheNextMove();
-      const { nextCell: { coordinates: n }, activeCell: { coordinates: p } } = table;
+      const { nextCell: n, activeCell: p } = table;
       client.send(`${p.x} ${p.y} ${n.x} ${n.y}`);
+
       devClient?.send(JSON.stringify({ type: 'table', table }));
     } else if (command === 'reward') {
       const [cx, cy, nx, ny, reward] = args;
       const currentCell = table.activeCell;
       const { nextCell } = table;
-      if (cy === currentCell.coordinates.y
-        && cx === currentCell.coordinates.x
-        && ny === nextCell.coordinates.y
-        && nx === nextCell.coordinates.x) {
+      if (cy === currentCell.y && cx === currentCell.x
+        && ny === nextCell.y && nx === nextCell.x) {
         table.update(reward);
       } else {
-        throw new Error(`mismatch: ${args.join(' ')} ${[currentCell.coordinates.x, currentCell.coordinates.y]} ${[nextCell.coordinates.x, nextCell.coordinates.y]}`);
+        throw new Error(`mismatch: ${args.join(' ')}
+expected: ${[currentCell.x, currentCell.y]},${[nextCell.x, nextCell.y]}`);
       }
+
       table.determineTheNextMove();
       const n = table.nextCell.coordinates,
         p = nextCell.coordinates;
       client.send(`${p.x} ${p.y} ${n.x} ${n.y}`);
+
       devClient?.send(JSON.stringify({
         type: 'update',
         cell: currentCell,
