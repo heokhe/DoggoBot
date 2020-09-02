@@ -33,21 +33,30 @@ ws.addListener('connection', (client: WebSocket, req: Request) => {
       const [L, h, step] = args;
       table = createTableFromConfig(L, h, step);
       table.determineTheNextMove();
-      const { x, y } = table.nextCell.coordinates;
-      client.send(`${x} ${y}`);
+      const { nextCell: { coordinates: n }, activeCell: { coordinates: p } } = table;
+      client.send(`${p.x} ${p.y} ${n.x} ${n.y}`);
       devClient?.send(JSON.stringify({ type: 'table', table }));
     } else if (command === 'reward') {
-      const [reward, _movementId] = args;
-      const prevCell = table.activeCell;
-      table.update(reward);
-      const { x, y } = prevCell.coordinates;
-      client.send(`${x} ${y}`);
+      const [cx, cy, nx, ny, reward] = args;
+      const currentCell = table.activeCell;
+      const { nextCell } = table;
+      if (cy === currentCell.coordinates.y
+        && cx === currentCell.coordinates.x
+        && ny === nextCell.coordinates.y
+        && nx === nextCell.coordinates.x) {
+        table.update(reward);
+      } else {
+        throw new Error(`mismatch: ${args.join(' ')} ${[currentCell.coordinates.x, currentCell.coordinates.y]} ${[nextCell.coordinates.x, nextCell.coordinates.y]}`);
+      }
+      table.determineTheNextMove();
+      const n = table.nextCell.coordinates,
+        p = nextCell.coordinates;
+      client.send(`${p.x} ${p.y} ${n.x} ${n.y}`);
       devClient?.send(JSON.stringify({
         type: 'update',
-        cell: prevCell,
-        index: table.cells.indexOf(prevCell)
+        cell: currentCell,
+        index: table.cells.indexOf(currentCell)
       }));
-      table.determineTheNextMove();
     }
   });
 });

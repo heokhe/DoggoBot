@@ -2,8 +2,17 @@ const fakeUnityClient = new WebSocket('ws://localhost:8000');
 const server = new WebSocket('ws://localhost:8000?dev');
 const root = document.querySelector('main');
 
+// eslint-disable-next-line one-var-declaration-per-line
+let px, py, cx, cy;
+
 fakeUnityClient.onopen = () => {
   fakeUnityClient.send('config 3 1 5');
+};
+fakeUnityClient.onmessage = ({ data }) => {
+  [px, py, cx, cy] = data.split(' ');
+  fakeUnityClient.send(`
+    reward ${px} ${py} ${cx} ${cy} ${Math.ceil(Math.random() * 10) - 4}
+  `.trim());
 };
 
 // eslint-disable-next-line one-var-declaration-per-line
@@ -74,10 +83,9 @@ server.addEventListener('message', ev => {
     [mostUpdatedCell] = table.cells;
     writeTheMaximumUC();
     setupAndRender();
-    fakeUnityClient.send('reward 1');
   } else if (data.type === 'update') {
     update(data.index, data.cell);
     writeTheAverageUC();
-    fakeUnityClient.send(`reward ${Math.ceil(Math.random() * 10) - 4}`);
   }
+  // next();
 });
