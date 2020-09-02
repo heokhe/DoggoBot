@@ -1,9 +1,8 @@
 import express from 'express';
 import WebSocket, { Server } from 'ws';
+import { waitForConfirmation } from './stepByStep';
 import { createTableFromConfig } from './lib/commands/config';
 import type { Table } from './lib/table';
-
-// TODO: --step-by-step
 
 const port = 8000;
 const ws = new Server({ port }, () => {
@@ -24,7 +23,7 @@ ws.addListener('connection', (client: WebSocket, req: Request) => {
   if (client === devClient) return;
 
   let table: Table;
-  client.on('message', (msg: string) => {
+  client.on('message', async (msg: string) => {
     const firstSpaceIndex = msg.indexOf(' ');
     const command = msg.slice(0, firstSpaceIndex);
     const args = msg.slice(firstSpaceIndex + 1).split(' ').map(Number.parseFloat);
@@ -39,6 +38,7 @@ ws.addListener('connection', (client: WebSocket, req: Request) => {
 
       devClient?.send(JSON.stringify({ type: 'table', table }));
     } else if (command === 'reward') {
+      await waitForConfirmation();
       const [cx, cy, nx, ny, reward] = args;
       const currentCell = table.activeCell;
       const { nextCell } = table;
