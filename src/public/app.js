@@ -48,7 +48,9 @@ function writeTheAverageUC() {
 }
 
 function writeTheMaximumUC() {
-  document.getElementById('maxuc').innerText = mostUpdatedCell.updatesCount;
+  document.getElementById('maxuc').innerText = `
+    ${mostUpdatedCell.updatesCount} (at ${mostUpdatedCell.coordinates.x}, ${mostUpdatedCell.coordinates.y})
+  `.trim();
 }
 
 function update(index, cell) {
@@ -87,5 +89,4 @@ server.addEventListener('message', ev => {
     update(data.index, data.cell);
     writeTheAverageUC();
   }
-  // next();
 });
